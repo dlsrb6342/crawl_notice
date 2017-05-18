@@ -1,6 +1,7 @@
 import logging
 import logging.handlers
 import pymysql, requests, json
+from datetime import datetime
 from fb import get_facebook_feed
 from skku import get_skku_notice
 from cs import get_cs_notice
@@ -21,13 +22,14 @@ def crawl_notice():
 
     try:
         with conn.cursor() as curs:
-            curs.execute('select * from crawl') 
+            curs.execute('select * from category') 
             rows = curs.fetchall()
-            insert_sql = 'INSERT INTO notice (title, contents, c_id) values (%s, %s, %s)'
-            update_sql = 'UPDATE crawl set last_num = %s where id = %s'
+            insert_sql = 'INSERT INTO notice (title, contents, c_id, time, l_id) values (%s, %s, %s, %s, %s)'
+            update_sql = 'UPDATE category set last_num = %s where id = %s'
 
+            logger.info(rows)
             for r in rows:
-                c_id, name, last_num, page_id  = r 
+                c_id, last_num, name, page_id  = r 
                 if name == 'cs':
                     result = get_cs_notice(last_num, logger)
                     c_id = 1
@@ -42,7 +44,7 @@ def crawl_notice():
                         c_id = 4
         
                 for r in result:
-                    curs.execute(insert_sql, (r['title'], r['contents'], c_id))
+                    curs.execute(insert_sql, (r['title'], r['contents'], c_id, datetime.now(), 0))
                 if len(result) != 0:
                     if c_id == 3 or c_id == 4:
                         curs.execute(update_sql, (result[0]['last_num'], c_id))
