@@ -24,7 +24,7 @@ def crawl_notice():
         with conn.cursor() as curs:
             curs.execute('select * from category') 
             rows = curs.fetchall()
-            insert_sql = 'INSERT INTO notice (title, contents, c_id, time, l_id) values (%s, %s, %s, %s, %s)'
+            insert_sql = 'INSERT INTO notice (title, contents, c_id, time, l_id, link, img_src) values (%s, %s, %s, %s, %s, %s, %s)'
             update_sql = 'UPDATE category set last_num = %s where id = %s'
 
             logger.info(rows)
@@ -44,14 +44,14 @@ def crawl_notice():
                         c_id = 4
         
                 for r in result:
-                    curs.execute(insert_sql, (r['title'], r['contents'], c_id, datetime.now(), 0))
+                    curs.execute(insert_sql, (r['title'], r['contents'], c_id, datetime.now(), 0, r['link'], r['img_src']))
                 if len(result) != 0:
                     if c_id == 3 or c_id == 4:
                         curs.execute(update_sql, (result[0]['last_num'], c_id))
                     else:
                         curs.execute(update_sql, (result[len(result)-1]['last_num'], c_id))
 
-        conn.commit()
+                conn.commit()
 
     finally:
         conn.close()

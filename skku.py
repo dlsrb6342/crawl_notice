@@ -21,11 +21,16 @@ def get_skku_notice(last_num, logger):
             soup.td.extract()
             soup.td.extract()
             contents = soup.find(id="contents").div.text.strip()
-        
+            img_src = ""
+            for img in soup.find(id="contents").div.findAll('img'):
+                img_src = img_src + img['src'] + '#'
+            img_src = img_src[:len(img_src)-1]
             notice = {
                 'title': title,
                 'last_num': last_num,
-                'contents': contents
+                'contents': contents,
+                'link': URL,
+                'img_src': img_src
             }
             result.append(notice)
         except:
