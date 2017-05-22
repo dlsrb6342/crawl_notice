@@ -1,5 +1,4 @@
 import logging
-import logging.handlers
 import pymysql, requests, json
 from datetime import datetime
 from fb import get_facebook_feed
@@ -54,4 +53,5 @@ def crawl_notice():
                 conn.commit()
 
     finally:
+        del logger
         conn.close()
