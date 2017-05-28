@@ -20,7 +20,7 @@ def get_facebook_feed(page_id, last_created_time, logger):
                 logger.info('get '+ str(len(result)) + ' new facebook feed')
                 return result
             else:
-                if page_feed[i]['message']:
+                if 'message' in page_feed[i]:
                     link = "https://www.facebook.com/" + str(page_id) + "/posts/" + page_feed[i]['id'].split("_")[1]
                     attach = page_feed[i]['attachments']['data'][0]
                     img_src = ""
@@ -32,7 +32,7 @@ def get_facebook_feed(page_id, last_created_time, logger):
                         img_src = img_src[:len(img_src)-1]
 
                     notice = {
-                        'title': page_feed[i]['message'][:10] + '...',
+                        'title': page_feed[i]['message'][:30] + '...',
                         'contents': page_feed[i]['message'],
                         'last_num': feed_created_time,
                         'link': link,

@@ -4,6 +4,7 @@ from datetime import datetime
 from fb import get_facebook_feed
 from skku import get_skku_notice
 from cs import get_cs_notice
+from extract_location import extract_location
 
 
 def crawl_notice():
@@ -13,10 +14,6 @@ def crawl_notice():
     
     logger = logging.getLogger("crumbs") 
     logger.setLevel(logging.DEBUG) 
-    formatter = logging.Formatter('%(asctime)s > %(message)s')
-    fileHandler = logging.FileHandler('./log/crawl.log')
-    fileHandler.setFormatter(formatter)
-    logger.addHandler(fileHandler)
     logger.info('Start Periodic Task')
 
     try:
@@ -26,7 +23,6 @@ def crawl_notice():
             insert_sql = 'INSERT INTO notice (title, contents, c_id, time, l_id, link, img_src) values (%s, %s, %s, %s, %s, %s, %s)'
             update_sql = 'UPDATE category set last_num = %s where id = %s'
 
-            logger.info(rows)
             for r in rows:
                 c_id, last_num, name, page_id  = r 
                 if name == 'cs':
@@ -43,7 +39,8 @@ def crawl_notice():
                         c_id = 4
         
                 for r in result:
-                    curs.execute(insert_sql, (r['title'], r['contents'], c_id, datetime.now(), 0, r['link'], r['img_src']))
+                    location_id = extract_location(r['contents'])
+                    curs.execute(insert_sql, (r['title'], r['contents'], c_id, datetime.now(), location_id, r['link'], r['img_src']))
                 if len(result) != 0:
                     if c_id == 3 or c_id == 4:
                         curs.execute(update_sql, (result[0]['last_num'], c_id))
