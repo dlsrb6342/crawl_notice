@@ -9,7 +9,7 @@ def extract_location(contents):
  
     try:
         with conn.cursor() as curs:
-            curs.execute('select id, name, type, detail from location where id < 38')
+            curs.execute('select id, name, type, detail from location where id < 45')
             rows = curs.fetchall()
 
             location_set = set(map(lambda r: r[1], rows))

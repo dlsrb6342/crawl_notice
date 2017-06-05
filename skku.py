@@ -25,6 +25,14 @@ def get_skku_notice(last_num, logger):
             for img in soup.find(id="contents").div.findAll('img'):
                 img_src = img_src + img['src'] + '#'
             img_src = img_src[:len(img_src)-1]
+            if contents == "":
+                src_list = img_src.split('#')
+                for src in src_list:
+                    img_response = requests.get(src)
+                    if img_response.status_code != requests.codes.ok:
+                        URL = "http://www.skku.edu/new_home/campus/skk_comm/news_list.jsp" 
+                        img_src = ""
+                        break
             notice = {
                 'title': title,
                 'last_num': last_num,
