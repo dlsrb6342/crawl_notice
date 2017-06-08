@@ -62,7 +62,7 @@ def crawl_notice():
                         "id": max_id,
                         "img_src": r['img_src'],
                         "link": r['link'],
-                        "time": time.mktime(dt.timetuple()) * 1000
+                        "time": int(time.mktime(dt.timetuple()) * 1000)
                     } 
                     es = Elasticsearch('localhost:9200')
                     res = es.index(index="eunjeon", doc_type='notices', id=max_id, body=doc)
