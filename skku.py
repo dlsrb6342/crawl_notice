@@ -26,13 +26,16 @@ def get_skku_notice(last_num, logger):
                 img_src = img_src + img['src'] + '#'
             img_src = img_src[:len(img_src)-1]
             if contents == "":
-                src_list = img_src.split('#')
-                for src in src_list:
-                    img_response = requests.get(src)
-                    if img_response.status_code != requests.codes.ok:
-                        URL = "http://www.skku.edu/new_home/campus/skk_comm/news_list.jsp" 
-                        img_src = ""
-                        break
+                src_list = img_src.split("#")
+                if len(src_list) == 0:
+                    URL = "http://www.skku.edu/new_home/campus/skk_comm/news_list.jsp" 
+                    img_src = ""
+                else:
+                    for src in src_list:
+                        response = requests.get(src)
+                        if response.status_code != requests.codes.ok:
+                            URL = "http://www.skku.edu/new_home/campus/skk_comm/news_list.jsp" 
+                            img_src = ""
             notice = {
                 'title': title,
                 'last_num': last_num,
