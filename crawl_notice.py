@@ -5,6 +5,7 @@ from elasticsearch import Elasticsearch
 from fb import get_facebook_feed
 from skku import get_skku_notice
 from cs import get_cs_notice
+from icc import get_icc_notice
 from extract_location import extract_location
 
 
@@ -30,20 +31,23 @@ def crawl_notice():
             for row in rows:
                 id, last_num, name, page_id  = row['id'], row['last_num'], row['name'], row['page_id']
                 if name == 'cs':
-                    result = get_cs_notice(last_num, logger)
-                    id = 1
-                elif name == 'skku':
-                    result = get_skku_notice(last_num, logger)
-                    id = 2
-                else:
-                    result = get_facebook_feed(page_id, last_num, logger)
-                    if page_id == 1046976762077651:
-                        id = 3
+                    if page_id == 0:
+                        result = get_cs_notice(last_num, logger)
                     else:
-                        id = 4
+                        result = get_facebook_feed(page_id, last_num, logger)
+                elif name == 'skku':
+                    if page_id == 0:
+                        result = get_skku_notice(last_num, logger)
+                    else:
+                        result = get_facebook_feed(page_id, last_num, logger)
+                elif name == 'icc':
+                    if page_id == 0:
+                        result = get_icc_notice(last_num, logger)
+                    else:
+                        result = get_facebook_feed(page_id, last_num, logger)
                 
                 if len(result) != 0:
-                    if id == 3 or id == 4:
+                    if page_id != 0:
                         curs.execute(update_sql, (result[0]['last_num'], id))
                     else:
                         curs.execute(update_sql, (result[len(result)-1]['last_num'], id))

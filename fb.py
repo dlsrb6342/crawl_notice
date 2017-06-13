@@ -17,22 +17,23 @@ def get_facebook_feed(page_id, last_created_time, logger):
         for i in range((cnt - 1) * 5, cnt * 5):
             feed_created_time = datetime.strptime(page_feed[i]['created_time'], "%Y-%m-%dT%H:%M:%S+%f").timestamp()
             if feed_created_time <= last_created_time:
-                logger.info('get '+ str(len(result)) + ' new facebook feed')
+                logger.info('get '+ str(len(result)) + ' new facebook feed(' + str(page_id) + ')')
                 return result
             else:
                 if 'message' in page_feed[i]:
                     link = "https://www.facebook.com/" + str(page_id) + "/posts/" + page_feed[i]['id'].split("_")[1]
-                    attach = page_feed[i]['attachments']['data'][0]
                     img_src = ""
-                    if attach['type'] == 'photo':
-                        img_src = attach['media']['image']['src']
-                    elif attach['type'] == 'album':
-                        for data in attach['subattachments']['data']:
-                            img_src = img_src + data['media']['image']['src'] + "#"
-                        img_src = img_src[:len(img_src)-1]
+                    if 'attachments' in page_feed[i]:
+                        attach = page_feed[i]['attachments']['data'][0]
+                        if attach['type'] == 'photo':
+                            img_src = attach['media']['image']['src']
+                        elif attach['type'] == 'album':
+                            for data in attach['subattachments']['data']:
+                                img_src = img_src + data['media']['image']['src'] + "#"
+                            img_src = img_src[:len(img_src)-1]
 
                     notice = {
-                        'title': page_feed[i]['message'][:30] + '...',
+                        'title': '[페북] ' + page_feed[i]['message'][:30] + '...',
                         'contents': page_feed[i]['message'],
                         'last_num': feed_created_time,
                         'link': link,
