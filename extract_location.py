@@ -1,10 +1,16 @@
 from konlpy.tag import Mecab
-import pymysql
+import pymysql, json
+
+
+with open('config.json') as json_data_file:
+    config = json.load(json_data_file)
+mysql = config['mysql']
+
 
 def extract_location(contents):
-    conn = pymysql.connect(host='hostname', 
-        user='user', password='password', 
-        db='dbname', charset='charset')
+    conn = pymysql.connect(host=mysql['host'], 
+        user=mysql['user'], password=mysql['password'], 
+        db=mysql['db'], charset=mysql['charset'])
     mecab = Mecab()
  
     try:

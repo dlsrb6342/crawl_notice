@@ -9,10 +9,15 @@ from icc import get_icc_notice
 from extract_location import extract_location
 
 
+with open('config.json') as json_data_file:
+    config = json.load(json_data_file)
+mysql = config['mysql']
+
+
 def crawl_notice():
-    conn = pymysql.connect(host='hostname', 
-        user='user', password='password', 
-        db='dbname', charset='charset',
+    conn = pymysql.connect(host=mysql['host'], 
+        user=mysql['user'], password=mysql['password'], 
+        db=mysql['db'], charset=mysql['charset'],
         cursorclass=pymysql.cursors.DictCursor)
     
     logger = logging.getLogger("crumbs") 

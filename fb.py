@@ -1,10 +1,17 @@
 from facepy import utils, GraphAPI
 from datetime import datetime
+import json
+
+
+with open('config.json') as json_data_file:
+    config = json.load(json_data_file)
+fb = config['fb']
+
 
 def get_facebook_feed(page_id, last_created_time, logger):
     result = []
-    app_id = "app_id"
-    app_secret = "app_secret"
+    app_id = fb['app_id'] 
+    app_secret = fb['app_secret']
 
     access_token = utils.get_application_access_token(app_id, app_secret)
 
