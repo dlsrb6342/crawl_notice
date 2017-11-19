@@ -42,7 +42,7 @@ def get_facebook_feed(page_id, last_created_time, logger):
                     notice = {
                         'title': '[페북] ' + page_feed[i]['message'][:30] + '...',
                         'contents': page_feed[i]['message'],
-                        'last_num': feed_created_time,
+                        'time': feed_created_time,
                         'link': link,
                         'img_src': img_src
                     }
