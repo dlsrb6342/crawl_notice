@@ -29,7 +29,8 @@ def crawl_notice():
             curs.execute('SELECT * FROM notice_category') 
             rows = curs.fetchall()
             curs.execute('SELECT max(id) FROM notice')
-            max_id = curs.fetchone()['max(id)'] + 1
+            row = curs.fetchone()
+            max_id = 1 if row['max(id)'] is None else row['max(id)'] + 1
             insert_sql = 'INSERT INTO notice (title, contents, c_id, time, l_id,' + \
                 'link, img_src) VALUES (%s, %s, %s, %s, %s, %s, %s)'
             update_num_sql = 'UPDATE notice_category SET last_num = %s WHERE id = %s'
@@ -37,16 +38,16 @@ def crawl_notice():
 
             for row in rows:
                 _id, last_num, name = row['id'], row['last_num'], row['name']
-                page_id, time, _type = row['page_id'], row['time'], row['type']
+                page_id, _time, _type = row['page_id'], row['time'], row['type']
                 if name == 'cs':
                     hp_result = get_cs_notice(last_num, logger)
-                    fb_result = get_facebook_feed(page_id, time, logger)
+                    fb_result = get_facebook_feed(page_id, _time, logger)
                 elif name == 'skku':
                     hp_result = get_skku_notice(last_num, logger)
-                    fb_result = get_facebook_feed(page_id, time, logger)
+                    fb_result = get_facebook_feed(page_id, _time, logger)
                 elif name == 'icc':
                     hp_result = get_icc_notice(last_num, logger)
-                    fb_result = get_facebook_feed(page_id, time, logger)
+                    fb_result = get_facebook_feed(page_id, _time, logger)
                 
                 if len(hp_result) != 0:
                     curs.execute(update_num_sql, (hp_result[0]['last_num'], _id))
@@ -71,7 +72,7 @@ def crawl_notice():
                         "time": int(time.mktime(dt.timetuple()) * 1000)
                     } 
                     es = Elasticsearch('localhost:9200')
-                    res = es.index(index="eunjeon", doc_type='notices', _id=max_id, body=doc)
+                    res = es.index(index="eunjeon", doc_type='notices', id=max_id, body=doc)
                     max_id = max_id + 1
                 conn.commit()
 

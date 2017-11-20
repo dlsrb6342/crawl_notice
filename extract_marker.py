@@ -8,7 +8,7 @@ mysql = config['mysql']
 
 
 def extract_marker(contents, _type):
-    conn = pymysql.connect(host=mysql['host'], 
+    conn = pymysql.connect(host=mysql['host'], port=mysql['port'],
         user=mysql['user'], password=mysql['password'], 
         db=mysql['db'], charset=mysql['charset'])
     mecab = Mecab()

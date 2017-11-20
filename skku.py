@@ -7,7 +7,6 @@ def get_skku_notice(last_num, logger):
     result = []
     num_list = get_notice_num_list(last_num)[::-1]
     for i in num_list:
-        print(i)
         URL = "http://www.skku.edu/new_home/campus/skk_comm/notice_view.jsp?bCode=0&page=1&boardNum="
         URL = URL + str(i) + "&virtualNum=0&skey=BOARD_SUBJECT&keyword=&bName=board_news&bCode=0"
         response = requests.get(URL)
@@ -46,7 +45,7 @@ def get_skku_notice(last_num, logger):
         except:
             break
 
-    #logger.info('get '+ str(len(result)) + ' new skku notice')
+    logger.info('get '+ str(len(result)) + ' new skku notice')
     return result
 
 
