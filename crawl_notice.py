@@ -6,12 +6,18 @@ from fb import get_facebook_feed
 from skku import get_skku_notice
 from cs import get_cs_notice
 from icc import get_icc_notice
+from shb import get_shb_notice
 from extract_marker import extract_marker
 
 
 with open('config.json') as json_data_file:
     config = json.load(json_data_file)
 mysql = config['mysql']
+
+function_dict = { 
+  'skku': get_skku_notice, 'cs' : get_cs_notice, 
+  'icc': get_icc_notice, 'shb': get_shb_notice 
+}
 
 
 def crawl_notice():
@@ -39,15 +45,9 @@ def crawl_notice():
             for row in rows:
                 _id, last_num, name = row['id'], row['last_num'], row['name']
                 page_id, _time, _type = row['page_id'], row['time'], row['type']
-                if name == 'cs':
-                    hp_result = get_cs_notice(last_num, logger)
-                    fb_result = get_facebook_feed(page_id, _time, logger)
-                elif name == 'skku':
-                    hp_result = get_skku_notice(last_num, logger)
-                    fb_result = get_facebook_feed(page_id, _time, logger)
-                elif name == 'icc':
-                    hp_result = get_icc_notice(last_num, logger)
-                    fb_result = get_facebook_feed(page_id, _time, logger)
+                
+                hp_result = function_dict[name](last_num, logger)
+                fb_result = get_facebook_feed(page_id, _time, logger)
                 
                 if len(hp_result) != 0:
                     curs.execute(update_num_sql, (hp_result[0]['last_num'], _id))
