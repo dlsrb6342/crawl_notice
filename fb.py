@@ -8,7 +8,7 @@ with open('config.json') as json_data_file:
 fb = config['fb']
 
 
-def get_facebook_feed(page_id, last_created_time, logger):
+def get_facebook_feed(_id, page_id, last_created_time, logger, _type):
     result = []
     app_id = fb['app_id'] 
     app_secret = fb['app_secret']
@@ -40,11 +40,14 @@ def get_facebook_feed(page_id, last_created_time, logger):
                             img_src = img_src[:len(img_src)-1]
 
                     notice = {
+                        'id': _id,
                         'title': '[페북] ' + page_feed[i]['message'][:30] + '...',
                         'contents': page_feed[i]['message'],
                         'time': feed_created_time,
                         'link': link,
-                        'img_src': img_src
+                        'img_src': img_src,
+                        'type': _type,
+                        'ntype': 'F'
                     }
                     result.append(notice)
                 

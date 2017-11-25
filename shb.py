@@ -2,11 +2,12 @@ import requests
 from bs4 import BeautifulSoup
 
 
-def get_shb_notice(last_num, logger):
+def get_shb_notice(_id, last_num, logger):
     result = []
     link_list = get_notice_link_list(last_num)[::-1]
     for link, i in link_list:
         response = requests.get(link)
+        response.encoding = 'UTF-8'
         if response.status_code != requests.codes.ok:
             break
         try:
@@ -18,11 +19,14 @@ def get_shb_notice(last_num, logger):
                 img_src = img_src + img['src'] + '#'
             img_src = img_src[:len(img_src)-1]
             notice = {
+                'id': _id,
                 'title': title,
                 'last_num': i,
                 'contents': contents,
                 'link': link,
-                'img_src': img_src
+                'img_src': img_src,
+                'type': 'Y',
+                'ntype': 'H'
             }
             result.append(notice)
         except:
@@ -39,6 +43,7 @@ def get_notice_link_list(last_num):
     while True:
         URL = 'http://shb.skku.edu/enc/menu_6/sub6_2.jsp?mode=list&board_no=1377&pager.offset=' + str(page)
         response = requests.get(URL)
+        response.encoding = 'UTF-8'
         if response.status_code != requests.codes.ok:
             return link_list
         try:

@@ -12,10 +12,15 @@ def extract_marker(contents, _type):
         user=mysql['user'], password=mysql['password'], 
         db=mysql['db'], charset=mysql['charset'])
     mecab = Mecab()
-    c_id = 11 if _type == 'Y' else 12
+    if _type == 'MY':
+        sql = 'SELECT id, name, type, detail FROM marker WHERE marker_category_id = 11 OR marker_category_id = 12'
+    else:
+        c_id = 11 if _type == 'Y' else 12
+        sql = 'SELECT id, name, type, detail FROM marker WHERE marker_category_id = ' + str(c_id)
+
     try:
         with conn.cursor() as curs:
-            curs.execute('SELECT id, name, type, detail FROM marker WHERE marker_category_id = %s', c_id)
+            curs.execute(sql)
             rows = curs.fetchall()
 
             marker_set = set(map(lambda r: r[1], rows))

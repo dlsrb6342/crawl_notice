@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 
 
-def get_icc_notice(last_num, logger):
+def get_icc_notice(_id, last_num, logger):
     result = []
     URL_list = ["http://icc.skku.ac.kr/icc_new/board_view_square?boardName=board_notice&listPage=1&postSeq=", 
                 "http://icc.skku.ac.kr/icc_new/board_view_square?boardName=board_news&listPage=1&postSeq=", 
@@ -15,6 +15,7 @@ def get_icc_notice(last_num, logger):
     while True:
         URL = URL_list[count] + str(last_num) + postfix
         response = requests.get(URL)
+        response.encoding = 'UTF-8'
         soup = BeautifulSoup(response.text, 'html5lib')
         table = soup.table
         if table is None:
@@ -32,11 +33,14 @@ def get_icc_notice(last_num, logger):
         img_src = img_src[:len(img_src)-1]
 
         notice = {
+            'id': _id,
             'title': title,
             'last_num': last_num,
             'contents': contents,
             'link': link,
-            'img_src': img_src
+            'img_src': img_src,
+            'type': 'Y',
+            'ntype': 'H'
         }
         result.append(notice)
         count = 0  

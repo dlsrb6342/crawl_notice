@@ -3,13 +3,14 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 
 
-def get_skku_notice(last_num, logger):
+def get_skku_notice(_id, last_num, logger):
     result = []
     num_list = get_notice_num_list(last_num)[::-1]
     for i in num_list:
         URL = "http://www.skku.edu/new_home/campus/skk_comm/notice_view.jsp?bCode=0&page=1&boardNum="
         URL = URL + str(i) + "&virtualNum=0&skey=BOARD_SUBJECT&keyword=&bName=board_news&bCode=0"
         response = requests.get(URL)
+        response.encoding = 'UTF-8'
         if response.status_code != requests.codes.ok:
             break
         try:
@@ -35,11 +36,14 @@ def get_skku_notice(last_num, logger):
                             URL = "http://www.skku.edu/new_home/campus/skk_comm/news_list.jsp" 
                             img_src = ""
             notice = {
+                'id': _id,
                 'title': title,
                 'last_num': i,
                 'contents': contents,
                 'link': URL,
-                'img_src': img_src
+                'img_src': img_src,
+                'type': 'MY',
+                'ntype': 'H'
             }
             result.append(notice)
         except:
@@ -56,6 +60,7 @@ def get_notice_num_list(last_num):
     while True:
         URL = 'http://www.skku.edu/new_home/campus/skk_comm/notice_list.jsp?bName=board_news&bCode=0&page=' + str(page)
         response = requests.get(URL)
+        response.encoding = 'UTF-8'
         if response.status_code != requests.codes.ok:
             return num_list
         try:
