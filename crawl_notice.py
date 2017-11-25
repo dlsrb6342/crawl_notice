@@ -40,9 +40,9 @@ def crawl_notice():
             row = curs.fetchone()
             max_id = 1 if row['max(id)'] is None else row['max(id)'] + 1
             insert_sql = { 
-                'F': 'INSERT INTO notice (title, contents, p_id, time, m_id' + \
+                'F': 'INSERT INTO notice (title, contents, p_id, time, m_id, ' + \
                   'link, img_src, ntype) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)',
-                'H': 'INSERT INTO notice (title, contents, c_id, time, m_id' + \
+                'H': 'INSERT INTO notice (title, contents, c_id, time, m_id, ' + \
                   'link, img_src, ntype) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)'
             }
             update_num_sql = 'UPDATE notice_category SET last_num = %s WHERE id = %s'
