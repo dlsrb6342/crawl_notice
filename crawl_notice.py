@@ -50,7 +50,7 @@ def crawl_notice():
             result = []
 
             for page in pages:
-                _id, page_id, _time, _type = row['id'], row['page_id'], row['time'], row['type']
+                _id, page_id, _time, _type = page['id'], page['page_id'], page['time'], page['type']
                 fb_result = get_facebook_feed(_id, page_id, _time, logger, _type)
 
                 if len(fb_result) != 0:
