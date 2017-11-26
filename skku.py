@@ -5,7 +5,7 @@ from datetime import datetime
 
 def get_skku_notice(_id, last_num, logger):
     result = []
-    num_list = get_notice_num_list(last_num)[::-1]
+    num_list = get_notice_num_list(last_num)
     for i in num_list:
         URL = "http://www.skku.edu/new_home/campus/skk_comm/notice_view.jsp?bCode=0&page=1&boardNum="
         URL = URL + str(i) + "&virtualNum=0&skey=BOARD_SUBJECT&keyword=&bName=board_news&bCode=0"

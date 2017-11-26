@@ -54,7 +54,7 @@ def crawl_notice():
                 fb_result = get_facebook_feed(_id, page_id, _time, logger, _type)
 
                 if len(fb_result) != 0:
-                    curs.execute(update_time_sql, (fb_result[len(fb_result)-1]['time'], _id))
+                    curs.execute(update_time_sql, (fb_result[0]['time'], _id))
                     result += fb_result
                 
             for row in rows:
@@ -64,7 +64,7 @@ def crawl_notice():
                 hp_result = function_dict[name](_id, last_num, logger)
                 
                 if len(hp_result) != 0:
-                    curs.execute(update_num_sql, (hp_result[0]['last_num'], _id))
+                    curs.execute(update_num_sql, (hp_result[len(hp_result) - 1]['last_num'], _id))
                     result += hp_result
 
             dt = datetime.now()
@@ -72,12 +72,12 @@ def crawl_notice():
             for r in result:
                 marker_id = extract_marker(r['contents'], r['type'])
                 curs.execute(insert_sql[r['ntype']], (r['title'], r['contents'], r['id'], dt, marker_id, r['link'], r['img_src'], r['ntype']))
-                curs.execute('SELECT * FROM location WHERE id = %s', (location_id))
-                location = curs.fetchone()
+                curs.execute('SELECT * FROM marker WHERE id = %s', (marker_id))
+                marker = curs.fetchone()
                 doc = {
                     "contents": r['contents'],
                     "title": r['title'],
-                    "location": location,
+                    "marker": marker,
                     "id": max_id,
                     "img_src": r['img_src'],
                     "link": r['link'],
