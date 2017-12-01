@@ -32,7 +32,7 @@ def crawl_notice():
 
     try:
         with conn.cursor() as curs:
-            curs.execute('SELECT * FROM notice_category') 
+            curs.execute('SELECT * FROM category') 
             rows = curs.fetchall()
             curs.execute('SELECT * FROM page')
             pages = curs.fetchall()
@@ -45,7 +45,7 @@ def crawl_notice():
                 'H': 'INSERT INTO notice (title, contents, c_id, time, m_id, ' + \
                   'link, img_src, ntype) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)'
             }
-            update_num_sql = 'UPDATE notice_category SET last_num = %s WHERE id = %s'
+            update_num_sql = 'UPDATE category SET last_num = %s WHERE id = %s'
             update_time_sql = 'UPDATE page SET time = %s WHERE id = %s'
             result = []
 
