@@ -26,7 +26,7 @@ def get_facebook_feed(page, logger):
         for i in range((cnt - 1) * 5, cnt * 5):
             feed_created_time = datetime.strptime(page_feed[i]['created_time'], "%Y-%m-%dT%H:%M:%S+%f").timestamp()
             if feed_created_time <= last_created_time:
-                logger.info('get '+ str(len(result)) + ' new facebook feed(' + str(page_id) + ')')
+                logger.info('get '+ str(len(result)) + ' new facebook feed(' + detail + ')')
                 return result
             else:
                 if 'message' in page_feed[i]:

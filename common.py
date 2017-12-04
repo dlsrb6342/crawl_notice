@@ -39,7 +39,7 @@ def get_common_notice(row, logger) :
         except:
             break
     
-    logger.info('get ' + str(len(result)) + ' new shb notice')
+    logger.info('get ' + str(len(result)) + ' new ' + name + ' notice')
     return result
 
 
