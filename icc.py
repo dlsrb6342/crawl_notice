@@ -2,7 +2,8 @@ import requests
 from bs4 import BeautifulSoup
 
 
-def get_icc_notice(_id, last_num, logger):
+def get_icc_notice(row, logger):
+    _id, last_num = row['id'], row['last_num']
     result = []
     URL_list = ["http://icc.skku.ac.kr/icc_new/board_view_square?boardName=board_notice&listPage=1&postSeq=", 
                 "http://icc.skku.ac.kr/icc_new/board_view_square?boardName=board_news&listPage=1&postSeq=", 
@@ -39,7 +40,7 @@ def get_icc_notice(_id, last_num, logger):
             'contents': contents,
             'link': link,
             'img_src': img_src,
-            'type': 'Y',
+            'type': row['type'],
             'ntype': 'H'
         }
         result.append(notice)

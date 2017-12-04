@@ -3,7 +3,8 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 
 
-def get_skku_notice(_id, last_num, logger):
+def get_skku_notice(row, logger):
+    _id, last_num= row['id'], row['last_num']
     result = []
     num_list = get_notice_num_list(last_num)
     for i in num_list:
@@ -42,7 +43,7 @@ def get_skku_notice(_id, last_num, logger):
                 'contents': contents,
                 'link': URL,
                 'img_src': img_src,
-                'type': 'MY',
+                'type': row['type'],
                 'ntype': 'H'
             }
             result.append(notice)

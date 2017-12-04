@@ -1,10 +1,17 @@
-import requests
+import requests, json
 from bs4 import BeautifulSoup
 
 
-def get_shb_notice(_id, last_num, logger):
+with open('config.json') as json_data_file:
+    config = json.load(json_data_file)
+prefix = config['url']['prefix']
+board_no = config['url']['board_no']
+
+
+def get_common_notice(row, logger) :
+    _id, last_num, name = row['id'], row['last_num'], row['name']
     result = []
-    link_list = get_notice_link_list(last_num)[::-1]
+    link_list = get_notice_link_list(last_num, name)[::-1]
     for link, i in link_list:
         response = requests.get(link)
         response.encoding = 'UTF-8'
@@ -12,7 +19,7 @@ def get_shb_notice(_id, last_num, logger):
             break
         try:
             soup = BeautifulSoup(response.text, 'html5lib')
-            title = soup.title.text
+            title = soup.table.tr.td.text
             contents = soup.table.find(id="article_text").text.strip()
             img_src = ""
             for img in soup.table.find(id="article_text").findAll('img'):
@@ -25,7 +32,7 @@ def get_shb_notice(_id, last_num, logger):
                 'contents': contents,
                 'link': link,
                 'img_src': img_src,
-                'type': 'Y',
+                'type': row['type'],
                 'ntype': 'H'
             }
             result.append(notice)
@@ -36,12 +43,11 @@ def get_shb_notice(_id, last_num, logger):
     return result
 
 
-def get_notice_link_list(last_num):
+def get_notice_link_list(last_num, name):
     page = 0
     link_list = []
-    prefix = 'http://shb.skku.edu/enc/menu_6/sub6_2.jsp'
     while True:
-        URL = 'http://shb.skku.edu/enc/menu_6/sub6_2.jsp?mode=list&board_no=1377&pager.offset=' + str(page)
+        URL = prefix[name] + '?mode=list&board_no='+board_no[name]+'&pager.offset=' + str(page)
         response = requests.get(URL)
         response.encoding = 'UTF-8'
         if response.status_code != requests.codes.ok:
@@ -50,8 +56,10 @@ def get_notice_link_list(last_num):
             soup = BeautifulSoup(response.text, 'html5lib')
             notice_list = soup.table.findAll('tr')[1:]
             for notice in notice_list:
+                if notice.td.text == '':
+                    continue
                 if int(notice.td.text) > last_num:
-                    link_list.append((prefix + notice.a['href'], int(notice.td.text)))
+                    link_list.append((prefix[name] + notice.a['href'], int(notice.td.text)))
                 else:
                     return link_list
             page += 10

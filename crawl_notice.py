@@ -6,7 +6,7 @@ from fb import get_facebook_feed
 from skku import get_skku_notice
 from cs import get_cs_notice
 from icc import get_icc_notice
-from shb import get_shb_notice
+from common import get_common_notice
 from extract_marker import extract_marker
 
 
@@ -16,7 +16,12 @@ mysql = config['mysql']
 
 function_dict = { 
   'skku': get_skku_notice, 'cs' : get_cs_notice, 
-  'icc': get_icc_notice, 'shb': get_shb_notice 
+  'icc': get_icc_notice, 'shb': get_common_notice,
+  'cscience': get_common_notice, 'biotech': get_common_notice,
+  'ecostat': get_common_notice, 'scos': get_common_notice,
+  'liberalarts': get_common_notice, 'law': get_common_notice,
+  'sscience': get_common_notice, 'coe': get_common_notice,
+  'art': get_common_notice
 }
 
 
@@ -50,21 +55,19 @@ def crawl_notice():
             result = []
 
             for page in pages:
-                _id, page_id, _time, _type = page['id'], page['page_id'], page['time'], page['type']
-                fb_result = get_facebook_feed(_id, page_id, _time, logger, _type)
+                fb_result = get_facebook_feed(page, logger)
 
                 if len(fb_result) != 0:
                     curs.execute(update_time_sql, (fb_result[0]['time'], _id))
                     result += fb_result
                 
             for row in rows:
-                _id, last_num, name = row['id'], row['last_num'], row['name']
                 rows = curs.fetchall()
                 
-                hp_result = function_dict[name](_id, last_num, logger)
+                hp_result = function_dict[row['name']](row, logger)
                 
                 if len(hp_result) != 0:
-                    curs.execute(update_num_sql, (hp_result[len(hp_result) - 1]['last_num'], _id))
+                    curs.execute(update_num_sql, (hp_result[len(hp_result) - 1]['last_num'], row['id']))
                     result += hp_result
 
             dt = datetime.now()

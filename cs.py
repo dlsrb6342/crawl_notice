@@ -3,7 +3,8 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 
 
-def get_cs_notice(_id, last_num, logger):
+def get_cs_notice(row, logger):
+    _id, last_num = row['id'], row['last_num']
     result = []
     URL_list = ["http://cs.skku.edu/ajax/board/view/notice/", "http://cs.skku.edu/ajax/board/view/news/", 
             "http://cs.skku.edu/ajax/board/view/seminar/", "http://cs.skku.edu/ajax/board/view/recruit/" ]
@@ -39,7 +40,7 @@ def get_cs_notice(_id, last_num, logger):
                 'contents': contents,
                 'link': link,
                 'img_src': img_src,
-                'type': 'Y',
+                'type': row['type'],
                 'ntype': 'H'
             }
             result.append(notice)
