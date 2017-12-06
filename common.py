@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 with open('config.json') as json_data_file:
     config = json.load(json_data_file)
 prefix = config['url']['prefix']
+img_prefix = config['url']['img_prefix']
 board_no = config['url']['board_no']
 
 
@@ -23,7 +24,8 @@ def get_common_notice(row, logger) :
             contents = soup.table.find(id="article_text").text.strip()
             img_src = ""
             for img in soup.table.find(id="article_text").findAll('img'):
-                img_src = img_src + img['src'] + '#'
+                src = img['src'] if img['src'].startswith('http') else img_prefix[name] + img['src']
+                img_src = img_src + src + '#'
             img_src = img_src[:len(img_src)-1]
             notice = {
                 'id': _id,
