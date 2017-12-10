@@ -46,9 +46,9 @@ def crawl_notice():
             max_id = 1 if row['max(id)'] is None else row['max(id)'] + 1
             insert_sql = { 
                 'F': 'INSERT INTO notice (title, contents, p_id, time, m_id, ' + \
-                  'link, img_src, ntype) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)',
+                  'link, img_src) VALUES (%s, %s, %s, %s, %s, %s, %s)',
                 'H': 'INSERT INTO notice (title, contents, c_id, time, m_id, ' + \
-                  'link, img_src, ntype) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)'
+                  'link, img_src) VALUES (%s, %s, %s, %s, %s, %s, %s)'
             }
             update_num_sql = 'UPDATE category SET last_num = %s WHERE id = %s'
             update_time_sql = 'UPDATE page SET time = %s WHERE id = %s'
@@ -74,7 +74,7 @@ def crawl_notice():
 
             for r in result:
                 marker_id = extract_marker(r['contents'], r['type'])
-                curs.execute(insert_sql[r['ntype']], (r['title'], r['contents'], r['id'], dt, marker_id, r['link'], r['img_src'], r['ntype']))
+                curs.execute(insert_sql[r['ntype']], (r['title'], r['contents'], r['id'], dt, marker_id, r['link'], r['img_src']))
                 curs.execute('SELECT * FROM marker WHERE id = %s', (marker_id))
                 marker = curs.fetchone()
                 doc = {
