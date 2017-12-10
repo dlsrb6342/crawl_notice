@@ -58,7 +58,7 @@ def crawl_notice():
                 fb_result = get_facebook_feed(page, logger)
 
                 if len(fb_result) != 0:
-                    curs.execute(update_time_sql, (fb_result[0]['time'], page['id']))
+                    curs.execute(update_time_sql, (fb_result[-1]['time'], page['id']))
                     result += fb_result
                 
             for row in rows:
@@ -67,7 +67,7 @@ def crawl_notice():
                 hp_result = function_dict[row['name']](row, logger)
                 
                 if len(hp_result) != 0:
-                    curs.execute(update_num_sql, (hp_result[len(hp_result) - 1]['last_num'], row['id']))
+                    curs.execute(update_num_sql, (hp_result[-1]['last_num'], row['id']))
                     result += hp_result
 
             dt = datetime.now()

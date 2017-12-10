@@ -27,7 +27,7 @@ def get_facebook_feed(page, logger):
             feed_created_time = datetime.strptime(page_feed[i]['created_time'], "%Y-%m-%dT%H:%M:%S+%f").timestamp()
             if feed_created_time <= last_created_time:
                 logger.info('get '+ str(len(result)) + ' new facebook feed(' + detail + ')')
-                return result
+                return result[::-1]
             else:
                 if 'message' in page_feed[i]:
                     link = "https://www.facebook.com/" + str(page_id) + "/posts/" + page_feed[i]['id'].split("_")[1]

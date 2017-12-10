@@ -51,7 +51,7 @@ def get_skku_notice(row, logger):
             break
 
     logger.info('get '+ str(len(result)) + ' new skku notice')
-    return result
+    return result[::-1]
 
 
 def get_notice_num_list(last_num): 
