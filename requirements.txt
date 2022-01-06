@@ -2,7 +2,7 @@ amqp==2.1.4
 appdirs==1.4.3
 beautifulsoup4==4.5.3
 billiard==3.5.0.2
-celery==4.0.2
+celery==5.2.2
 cycler==0.10.0
 docutils==0.13.1
 elasticsearch==2.4.1
