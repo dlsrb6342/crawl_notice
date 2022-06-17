@@ -13,7 +13,7 @@ kombu==4.0.2
 konlpy==0.4.4
 lockfile==0.12.2
 mecab-python===0.996-ko-0.9.0
-numpy==1.12.1
+numpy==1.21.0
 packaging==16.8
 pandas==0.20.1
 PyMySQL==0.7.11
